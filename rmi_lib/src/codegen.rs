@@ -409,7 +409,7 @@ struct __attribute__((packed)) SplinePoint {{
   uint64_t value;
 }};
 
-uint64_t lookup(uint64_t key, size_t* err) {{
+inline uint64_t lookup(uint64_t key, size_t* err) {{
   const uint64_t num_spline_pts = {};
   const uint64_t total_keys = {};
   size_t error_on_spline_search;
@@ -616,7 +616,7 @@ inline size_t FCLAMP(double inp, double bound) {{
   if (inp < 0.0) return 0;
   return (inp > bound ? bound : (size_t)inp);
 }}\n"
-    )?;
+)?;
 
     let rmi_lookup_name = if rmi.cache_fix.is_none() {
         "lookup"

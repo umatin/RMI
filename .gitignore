@@ -5,3 +5,5 @@ Cargo.lock
 *\#
 \#*
 rmi_data
+my_first_rmi.*
+my_first_rmi_data.h

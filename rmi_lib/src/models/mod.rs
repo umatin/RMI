@@ -17,6 +17,8 @@ mod radix;
 mod stdlib;
 mod utils;
 
+mod tslinear;
+
 pub use balanced_radix::BalancedRadixModel;
 pub use cubic_spline::CubicSplineModel;
 pub use histogram::EquidepthHistogramModel;
@@ -29,6 +31,8 @@ pub use normal::NormalModel;
 pub use radix::RadixModel;
 pub use radix::RadixTable;
 pub use stdlib::StdFunctions;
+
+pub use tslinear::TsLinearModel;
 
 use std::cmp::Ordering;
 use std::collections::HashSet;

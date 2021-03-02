@@ -39,7 +39,7 @@ fn build_models_from<T: TrainingKey>(data: &RMITrainingData<T>,
     let bounded_it = data.iter()
         .skip(start_idx)
         .take(end_idx - start_idx);
-        
+    
     for (x, y) in bounded_it {
         let model_pred = top_model.predict_to_int(&x.to_model_input()) as usize;
         assert!(top_model.needs_bounds_check() || model_pred < first_model_idx + num_models,
@@ -59,6 +59,7 @@ fn build_models_from<T: TrainingKey>(data: &RMITrainingData<T>,
             second_layer_data.push((x, y));
             
             let container = RMITrainingData::new(Box::new(second_layer_data));
+
             let leaf_model = train_model(model_type, &container);
             leaf_models.push(leaf_model);
             
@@ -214,7 +215,20 @@ pub fn train_two_layer<T: TrainingKey>(md_container: &mut RMITrainingData<T>,
 
         let cur_val = last_layer_max_l1s[target];
         last_layer_max_l1s[target] = (cur_val.0 + 1, u64::max(err, cur_val.1));
-    }    
+    }
+
+    //Correct log2 error computation
+    let mut total_log2_error : f64 = 0.0;
+    for (x, y) in md_container.iter_model_input() {
+        let leaf_idx = top_model.predict_to_int(&x);
+        let target = u64::min(num_leaf_models - 1, leaf_idx) as usize;
+        
+        let pred = leaf_models[target].predict_to_int(&x);
+        let err = error_between(pred, y as u64, md_container.len() as u64);
+        
+        total_log2_error += (1.0 + err as f64).log2();
+    }
+    trace!("Actual log2 error {}", total_log2_error / num_rows as f64);
 
     // for lower bound searches, we need to make sure that:
     //   (1) a query for the first key in the next leaf minus one 
@@ -278,8 +292,8 @@ pub fn train_two_layer<T: TrainingKey>(md_container: &mut RMITrainingData<T>,
         .iter()
         .map(|(n, err)| ((n*err) as f64).powf(2.0) / num_rows as f64).sum::<f64>();
     
-    let model_avg_log2_error: f64 = last_layer_max_l1s
-        .iter().map(|(n, err)| (*n as f64)*((2*err + 2) as f64).log2()).sum::<f64>() / num_rows as f64;
+    //let model_avg_log2_error: f64 = last_layer_max_l1s.iter().map(|(n, err)| (*n as f64)*((2*err + 2) as f64).log2()).sum::<f64>() / num_rows as f64;
+    let model_avg_log2_error = total_log2_error / num_rows as f64;
 
     let model_max_log2_error: f64 = (model_max_error as f64).log2();
     

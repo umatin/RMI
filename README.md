@@ -74,6 +74,7 @@ uint64_t lookup(uint64_t key);
 Currently, the following types of RMI layers are supported:
 
 * `linear`, simple linear regression
+* `tslinear`, linear regression using tournament evaluation
 * `linear_spline`, connected linear spline segments
 * `cubic`, connected cubic spline segments
 * `loglinear`, simple linear regression with a log transform

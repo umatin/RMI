@@ -9,7 +9,7 @@
 
 use crate::models::*;
 
-fn slr<T: Iterator<Item = (f64, f64)>>(loc_data: T) -> (f64, f64) {
+pub fn slr<T: Iterator<Item = (f64, f64)>>(loc_data: T) -> (f64, f64) {
 
     // compute the covariance of x and y as well as the variance of x in
     // a single pass.

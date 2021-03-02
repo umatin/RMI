@@ -137,7 +137,7 @@ pub fn load_data(filepath: &str,
 
     let mmap = unsafe { MmapOptions::new().map(&fd).unwrap() };
     let num_items = (&mmap[0..8]).read_u64::<LittleEndian>().unwrap() as usize;
-
+    
     let rtd = match dt {
         DataType::UINT64 =>
             RMIMMap::UINT64(RMITrainingData::new(Box::new(
@@ -152,6 +152,6 @@ pub fn load_data(filepath: &str,
                 SliceAdapterF64 { data: mmap, length: num_items }
             )))
     };
-
+    
     return (num_items, rtd);
 }

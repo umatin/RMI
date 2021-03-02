@@ -36,6 +36,7 @@ fn train_model<T: TrainingKey>(model_type: &str,
                               data: &RMITrainingData<T>) -> Box<dyn Model> {
     let model: Box<dyn Model> = match model_type {
         "linear" => Box::new(LinearModel::new(data)),
+        "tslinear" => Box::new(TsLinearModel::new(data)),
         "robust_linear" => Box::new(RobustLinearModel::new(data)),
         "linear_spline" => Box::new(LinearSplineModel::new(data)),
         "cubic" => Box::new(CubicSplineModel::new(data)),
